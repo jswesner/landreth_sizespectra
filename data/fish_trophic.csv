@@ -1,0 +1,72 @@
+species,scientific,trophic_gpt,trophic_fishbase,trophic_wesner
+central stoneroller,Campostoma anomalum,Herbivore,browsing on substrate,herbivore
+ohio lamprey,Ichthyomyzon bdellium,Predator (parasitic),feeding on a host (parasite),parasite
+gizzard shad,Dorosoma cepedianum,Omnivore,filtering plankton,omnivore
+rock bass,Ambloplites rupestris,Predator,hunting macrofauna (predator),predator
+yellow bullhead,Ameiurus natalis,Omnivore,hunting macrofauna (predator),predator
+freshwater drum,Aplodinotus grunniens,Omnivore,hunting macrofauna (predator),predator
+white sucker,Catostomus commersonii,Omnivore,hunting macrofauna (predator),predator
+mottled sculpin,Cottus bairdii,Predator,hunting macrofauna (predator),predator
+common carp,Cyprinus carpio,Omnivore,hunting macrofauna (predator),predator
+greenside darter,Etheostoma blennioides,Predator,hunting macrofauna (predator),predator
+rainbow darter,Etheostoma caeruleum,Predator,hunting macrofauna (predator),predator
+fantail darter,Etheostoma flabellare,Predator,hunting macrofauna (predator),predator
+johnny darter,Etheostoma nigrum,Predator,hunting macrofauna (predator),predator
+smallmouth buffalo,Ictiobus bubalus,Omnivore,hunting macrofauna (predator),predator
+brook silverside,Labidesthes sicculus,Omnivore,hunting macrofauna (predator),predator
+longnose gar,Lepisosteus osseus,Predator,hunting macrofauna (predator),predator
+redbreast sunfish,Lepomis auritus,Omnivore,hunting macrofauna (predator),predator
+pumpkinseed,Lepomis gibbosus,Omnivore,hunting macrofauna (predator),predator
+bluegill,Lepomis macrochirus,Omnivore,hunting macrofauna (predator),predator
+longear sunfish,Lepomis megalotis,Omnivore,hunting macrofauna (predator),predator
+striped shiner,Luxilus chrysocephalus,Omnivore,hunting macrofauna (predator),predator
+smallmouth bass,Micropterus dolomieu,Predator,hunting macrofauna (predator),predator
+spotted bass,Micropterus punctulatus,Predator,hunting macrofauna (predator),predator
+largemouth bass,Micropterus salmoides,Predator,hunting macrofauna (predator),predator
+white bass,Morone chrysops,Predator,hunting macrofauna (predator),predator
+silver shiner,Notropis photogenis,Omnivore,hunting macrofauna (predator),predator
+mimic shiner,Notropis volucellus,Omnivore,hunting macrofauna (predator),predator
+rainbow trout,Oncorhynchus mykiss,Predator,hunting macrofauna (predator),predator
+blackside darter,Percina maculata,Predator,hunting macrofauna (predator),predator
+white crappie,Pomoxis annularis,Predator,hunting macrofauna (predator),predator
+black crappie,Pomoxis nigromaculatus,Predator,hunting macrofauna (predator),predator
+flathead catfish,Pylodictis olivaris,Predator,hunting macrofauna (predator),predator
+longnose dace,Rhinichthys cataractae,Omnivore,hunting macrofauna (predator),predator
+brown trout,Salmo trutta,Predator,hunting macrofauna (predator),predator
+brook trout,Salvelinus fontinalis,Predator,hunting macrofauna (predator),predator
+sauger,Sander canadensis,Predator,hunting macrofauna (predator),predator
+creek chub,Semotilus atromaculatus,Omnivore,hunting macrofauna (predator),predator
+rosyside dace,Clinostomus funduloides,Omnivore,NA,predator
+spotfin shiner,Cyprinella spiloptera,Omnivore,NA,predator
+silverjaw minnow,Ericymba buccata,Omnivore,NA,predator
+variegate darter,Etheostoma variatum,Predator,NA,predator
+banded darter,Etheostoma zonale,Predator,NA,predator
+northern hogsucker,Hypentelium nigricans,Omnivore,NA,omnivore
+least brook lamprey,Lampetra aepyptera,Herbivore,NA,herbivore
+green sunfish,Lepomis cyanellus,Omnivore,NA,predator
+green sunfish x ?,Lepomis cyanellus x ?,Omnivore,NA,predator
+bluegill x ?,Lepomis macrochirus x ?,Omnivore,NA,predator
+striped shiner x ?,Luxilus chrysocephalus x ?,Omnivore,NA,predator
+striped shiner x rosyface shiner,Luxilus chrysocephalus x Notropis rubellus,Omnivore,NA,predator
+silver redhorse,Moxostoma anisurum,Omnivore,NA,predator
+smallmouth redhorse,Moxostoma breviceps,Omnivore,NA,predator
+black redhorse,Moxostoma duquesnei,Omnivore,NA,predator
+golden redhorse,Moxostoma erythrurum,Omnivore,NA,predator
+moxostoma sp.,Moxostoma sp.,Omnivore,NA,predator
+river chub,Nocomis micropogon,Omnivore,NA,predator
+river chub x ?,Nocomis micropogon x ?,Omnivore,NA,predator
+river chub x sand shiner,Nocomis micropogon x Notropis stramineus,Omnivore,NA,predator
+rosyface shiner x striped shiner,Notropis rubellus x Luxilus chrysocephalus,Omnivore,NA,predator
+stonecat madtom,Noturus flavus,Predator,NA,predator
+brindled madtom,Noturus miurus,Predator,NA,predator
+golden rainbow trout,Oncorhynchus mykiss (color variant),Predator,NA,predator
+logperch,Percina caprodes,Predator,NA,predator
+sharpnose darter,Percina oxyrhynchus,Predator,NA,predator
+longnose dace x river chub,Rhinichthys cataractae x Nocomis micropogon,Omnivore,NA,omnivore
+tiger trout,Salmo trutta x Salvelinus fontinalis,Predator,NA,predator
+mosquitofish,Gambusia affinis,Predator,variable,predator
+channel catfish,Ictalurus punctatus,Omnivore,variable,omnivore
+rosyface shiner,Notropis rubellus,Omnivore,variable,omnivore
+sand shiner,Notropis stramineus,Omnivore,variable,omnivore
+bluntnose minnow,Pimephales notatus,Omnivore,variable,omnivore
+blacknose dace,Rhinichthys atratulus,Omnivore,variable,omnivore
