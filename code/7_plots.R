@@ -13,7 +13,6 @@ landreth_fishmacros_data = readRDS(file = "data/landreth_fishmacros_data.rds") %
 landreth_macros_data = readRDS(file = "data/landreth_macros_data.rds") %>% mutate(taxon = "macros")
 landreth_fish_data = readRDS(file = "data/landreth_fish_data.rds") %>% mutate(taxon = "fish")
 
-
 landreth_data = bind_rows(landreth_fishmacros_data, landreth_macros_data, landreth_fish_data)
 
 # posterior averaged parameter values ------------------------------------------------------
@@ -25,7 +24,7 @@ post_average_parameters = bind_rows(post_average_fishmacros_parameters,
                                     post_average_macros_parameters,
                                     post_average_fish_parameters)
 
-saveRDS(post_average_parameters, file = "posteriors/post_average_parameters.rds")
+saveRDS(post_average_parameters, file = "posteriors/post_average_parameters_all.rds")
 
 
 clean_names = post_average_parameters %>% select(starts_with("b_"), taxon) %>% 
@@ -52,25 +51,26 @@ posterior_avg_probs = post_average_parameters %>%
 
 plot_post_avg_parameters = post_average_parameters %>%
   select(-b_Intercept) %>% 
+  select(starts_with("b_"), .draw, taxon) %>% 
   pivot_longer(starts_with("b_")) %>% 
   group_by(name) %>% 
   mutate(median_value = median(value),
          dist_0 = abs(median_value) - 0) %>%
   left_join(posterior_avg_probs) %>% 
-  mutate(taxon = as.factor(taxon),
-         taxon = fct_relevel(taxon, "fish + macros", "macros")) %>% 
-  ggplot(aes(y = reorder(clean_name, median_value), x = value, fill = taxon)) + 
-  # stat_pointinterval() +
+  mutate(taxon = case_when(taxon == "macros" ~ "b) macros",
+                           taxon == "fish" ~ "c) fish",
+                           TRUE ~ "a) fish + macros")) %>% 
+  ggplot(aes(y = reorder(clean_name, median_value), x = value, fill = median_value)) + 
   stat_slabinterval(color = 'grey50', shape = 1) +
-  scale_fill_colorblind() +
   geom_vline(xintercept = 0) +
   guides(color = "none",
          fill = "none",
          alpha = "none") +
+  xlim(-0.1, 0.1) +
   labs(y = "Parameter",
        x = "Posterior Averaged Parameter Value",
        fill = "P(value > 0)") +
-  facet_wrap(~taxon, scales = "free_x") + 
+  facet_wrap(~taxon, scales = "free_x") +
   NULL
 
 # ggview::ggview(plot_post_avg_parameters, width = 6.5, height = 6.5)
@@ -79,7 +79,8 @@ ggsave(plot_post_avg_parameters, width = 6.5, height = 6.5,
 
 # posterior averaged regressions ------------------------------------------------------
 
-post_average_parameters = readRDS(file = "posteriors/post_average_parameters.rds")
+post_average_parameters = readRDS(file = "posteriors/post_average_parameters_all.rds")
+post_dots = readRDS(file = "posteriors/post_dots.rds")
 
 post_medians = post_average_parameters %>%
   select(-b_Intercept) %>% 
@@ -125,8 +126,8 @@ plot_post_average_lines = post_average_lines %>%
   filter(.draw <= 500) %>% 
   ggplot(aes(x = x, y = y)) + 
   stat_lineribbon(aes(fill = taxon), .width = c(0.5, 0.75, 0.95), alpha = 0.4) + 
-  facet_grid2(reorder(clean_name, -median_effect_size) ~ taxon) +
-  scale_fill_colorblind() +
+  ggh4x::facet_grid2(reorder(clean_name, -median_effect_size) ~ taxon) +
+  ggthemes::scale_fill_colorblind() +
   guides(fill = "none") +
   labs(y = "\u03bb", 
         x= "Predictor (z-score)") +
@@ -138,22 +139,33 @@ ggsave(plot_post_average_lines, file = "plots/plot_post_average_lines.jpg", widt
 # stream lambdas ----------------------------------------------------------
 
 post_dots_stream = readRDS(file = "posteriors/post_dots.rds") %>%
-  filter(grepl("ntercept", model_name))
+  filter(grepl("ntercept", model_name)) %>% 
+  mutate(taxon_new = case_when(grepl("fishmacros", taxon) ~ "a) fish + macros",
+                                grepl("macros", taxon) ~ "b) macros",
+                                TRUE ~ "c) fish"))
+
+fishmacros_median = post_dots_stream %>% filter(taxon_new == "a) fish + macros") %>% 
+  group_by(stream) %>% 
+  reframe(median_lambda = median(.epred))
 
 stream_lambdas = post_dots_stream %>%
-  ggplot(aes(x = stream, y = .epred, color = taxon_new)) + 
-  stat_pointinterval(position = position_dodge(width = 0.4),
-                     size = 0.8, aes(shape = taxon_new)) +
+  left_join(fishmacros_median) %>% 
+  ggplot(aes(x = reorder(stream, -median_lambda), y = .epred, color = taxon_new)) + 
+  stat_pointinterval(position = position_dodge(width = 0.4),aes(shape = taxon_new),
+                     size = 0.01) +
   scale_color_colorblind() +
   labs(x = "Stream Site", 
        y = "\u03bb",
        color = "",
        shape = "") +
+  facet_wrap(~taxon_new, ncol = 3) +
+  guides(color = "none",
+         shape = "none") +
   theme(legend.text = element_text(size = 7),
         text = element_text(size = 9),
         axis.text.x = element_text(angle = 90, hjust = 0))
   
-ggsave(stream_lambdas, file = "plots/stream_lambdas.jpg", dpi = 500, width = 6.5, height = 4)
+ggsave(stream_lambdas, file = "plots/stream_lambdas.jpg", dpi = 500, width = 6.5, height = 3)
 
 
 # compare landreth and mle_bin --------------------------------------------

@@ -41,7 +41,6 @@ saveRDS(model_list, file = "posteriors/model_list.rds")
 # posterior averaging -----------------------------------------------------
 model_list = readRDS(file = "posteriors/model_list.rds")
 
-
 # filter to only subset of models
 # filtered_model_names <- names(model_list)[!grepl("PC", names(model_list), ignore.case = TRUE)]
 filtered_model_names <- names(model_list)[grepl("agtopo|trophic|intercept", names(model_list), ignore.case = TRUE)]
@@ -83,6 +82,20 @@ post_average_parameters = bind_rows(model_posts) %>%
 
 saveRDS(post_average_parameters, file = "posteriors/post_average_parameters.rds")
 
+post_average_parameters_all = bind_rows(model_posts) %>% 
+  # filter(.draw <= 1000) %>% 
+  select(.draw, starts_with("b_"), starts_with("sd_"), starts_with("r_"), model, weight) %>% 
+  mutate(across(starts_with("b_"), ~ replace_na(.x, 0))) %>%
+  mutate(across(starts_with("sd_"), ~ replace_na(.x, 0))) %>% 
+  mutate(across(starts_with("r_"), ~ replace_na(.x, 0))) %>%
+  group_by(.draw) %>% 
+  summarize(across(starts_with("b_"), ~ weighted.mean(.x, weight)),
+            across(starts_with("sd_"), ~ weighted.mean(.x, weight)),
+            across(starts_with("r_"), ~ weighted.mean(.x, weight))) %>% 
+  mutate(data = "fish + macros")
+
+
+saveRDS(post_average_parameters_all, file = "posteriors/post_average_parameters_all.rds")
 
 # plot 
 post_average_parameters %>%
