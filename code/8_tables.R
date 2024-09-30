@@ -19,8 +19,10 @@ post_dots_stream %>%
   arrange(`a) fish + macros`)
 
 post_dots_stream %>% 
-  group_by(taxon_new) %>% 
-  median_qi(.epred)
+  group_by(taxon_new, stream) %>% 
+  median_qi(.epred) %>% 
+  filter(grepl("b)", taxon_new)) %>% 
+  arrange(taxon_new, -.epred)
 
 # posterior averaged parameter values ------------------------------------------------------
 post_average_parameters = readRDS(file = "posteriors/post_average_parameters_all.rds")

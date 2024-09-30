@@ -1,0 +1,9 @@
+name,clean_name,fish + macros,fish,macros
+b_p_da_s,DA,0.96,0.98,0.96
+b_p_ag_s,% Agriculture,0.7,0.95,0.67
+b_p_slope_std_s,Slope SD,0.82,0.93,0.85
+b_fishmacros_omnivore_s,% Omnivore Biomass,0.73,0.06,0.75
+b_fishmacros_predator_s,% Predator Biomass,0.64,0.08,0.62
+b_fishmacros_herbivore_s,% Herbivore Biomass,0.57,0.14,0.55
+b_p_watershedn_s,Watershed Size Class,0.22,0.43,0.28
+b_p_elva_std_s,Elevation SD,0.27,0.2,0.27

@@ -66,7 +66,7 @@ plot_post_avg_parameters = post_average_parameters %>%
   guides(color = "none",
          fill = "none",
          alpha = "none") +
-  xlim(-0.1, 0.1) +
+  xlim(-0.2, 0.2) +
   labs(y = "Parameter",
        x = "Posterior Averaged Parameter Value",
        fill = "P(value > 0)") +
@@ -91,6 +91,9 @@ post_medians = post_average_parameters %>%
 preds = landreth_data %>% select(-dw_g, -counts, -xmin, -xmax,
                                             -sample_area_m2, -n, -watershed, -stream, -taxon) %>% 
   distinct() %>%
+  ungroup %>% 
+  select(ends_with("_s")) %>% 
+  select(!contains("PC")) %>% 
   summarise(across(everything(), list(min = min, max = max))) %>%
   pivot_longer(cols = everything()) %>% 
   mutate(min_max = str_sub(name, -3, -1),
@@ -133,7 +136,7 @@ plot_post_average_lines = post_average_lines %>%
         x= "Predictor (z-score)") +
   theme(strip.text.y = element_text(size = 6))
 
-ggview::ggview(plot_post_average_lines, width = 5, height = 9)
+# ggview::ggview(plot_post_average_lines, width = 5, height = 9)
 ggsave(plot_post_average_lines, file = "plots/plot_post_average_lines.jpg", width = 5, height = 9, dpi = 300)
 
 # stream lambdas ----------------------------------------------------------
@@ -187,44 +190,3 @@ post_summaries_stream %>% left_join(landreth_slopes) %>%
   geom_pointrange(aes(ymin = .lower, ymax = .upper, color = taxon)) +
   facet_wrap(~taxon)
 
-
-# model comparison plots --------------------------------------------------
-fishmacros_waic = readRDS(file = "posteriors/fishmacros_waic.rds")
-macros_waic = readRDS(file = "posteriors/macros_waic.rds")
-fish_waic = readRDS(file = "posteriors/fish_waic.rds")
-
-all_waic = bind_rows(fishmacros_waic, macros_waic, fish_waic) %>% 
-  clean_names() %>% 
-  # mutate(model = as.character(formula)) %>%
-  mutate(model = str_remove(model_formula, "dw_g \\| vreal\\(counts, xmin, xmax\\) "),
-         model = str_replace(model, "\\+ \\(1 \\| stream\\) \\+ \\(1 \\| watershed\\)", "..."),
-         model = str_replace(model, " \\(1 \\| stream\\) \\+ \\(1 \\| watershed\\)", " Intercept only"),
-         model = as.factor(model),
-         model = fct_relevel(model, "~ Intercept only")) %>%
-  mutate(lower = waic - 1.96*waic_se,
-         upper = waic + 1.96*waic_se) %>% 
-  group_by(data) %>% 
-  mutate(mean = mean(waic),
-         estimate_s = waic/ mean,
-         lower_s = lower / mean,
-         upper_s = upper / mean) %>% 
-  mutate(model_short = case_when(grepl("ntercept", model) ~ "Intercept only",
-                                 grepl("invert", model) ~ "Trophic: invertivores",
-                                 grepl("omniv", model) ~ "Trophic: omnivores",
-                                 grepl("herb", model) ~ "Trophic: herbivores",
-                                 grepl("p_devel", model) ~ "Land Use",
-                                 TRUE ~ "Topography"))
-  
-
-model_selection = all_waic %>% 
-  ggplot(aes(y = reorder(model_name, -estimate_s), 
-             x = waic, 
-             xmin = waic - waic_se, 
-             xmax = waic + waic_se)) +
-  geom_pointrange(size = 0.1) +
-  facet_wrap(~data) +
-  labs(x = "WAIC (standardized; lower is better)",
-       y = "Model") +
-  theme(text = element_text(size = 8))
-
-ggsave(model_selection, file = "plots/model_selection.jpg", width = 6.5, height = 4)

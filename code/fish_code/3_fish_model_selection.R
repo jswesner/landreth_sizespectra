@@ -6,7 +6,7 @@ library(isdbayes)
 source("code/custom_functions.R")
 
 # load data and models -----------------------------------------
-landreth_fish_data = readRDS(file = "data/landreth_fish_data.rds")
+landreth_fish_data = readRDS(file = "data/landreth_fish_data.rds") 
 
 model_fish_files = list.files(
   path = "models/fish_models/", 

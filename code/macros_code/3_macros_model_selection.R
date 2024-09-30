@@ -6,7 +6,7 @@ library(isdbayes)
 source("code/custom_functions.R")
 
 # load data and models -----------------------------------------
-landreth_macros_data = readRDS(file = "data/landreth_macros_data.rds")
+landreth_macros_data = readRDS(file = "data/landreth_macros_data.rds") 
 
 model_macros_files = list.files(
   path = "models/macros_models/", 
@@ -23,6 +23,7 @@ model_macros_list = NULL
 for (file in model_macros_files) {
   model_macros_list[[file]] <- readRDS(file)
 }
+
 
 
 # get waic for intercept only

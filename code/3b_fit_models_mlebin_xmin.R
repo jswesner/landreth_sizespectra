@@ -5,10 +5,7 @@ library(isdbayes)
 
 # load data
 
-peak_min_sizes <- readRDS("data/peak_min_sizes.RDS")
-landreth_fishmacros_data = readRDS(file = "data/landreth_fishmacros_data.rds") %>% 
-  left_join(peak_min_sizes) %>% 
-  filter(dw_g >= sum_min)
+landreth_fishmacros_data = readRDS(file = "data/landreth_fishmacros_data.rds") 
 
 # refit models
 brm_landreth_fishmacros_intercept_summin <- update(readRDS("models/brm_landreth_fishmacros_intercept.rds"),

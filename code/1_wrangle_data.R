@@ -30,10 +30,10 @@ abiotic_predictors = read_excel("data/predictors.xlsx") %>% clean_names() %>%
   select(-contains("p_fish_"))
 
 all_percent_trophic_bymass = readRDS(file = "data/all_percent_trophic_bymass.rds") # percent of mass in trophic groups for all, fishonly, and macrosonly
-all_pca_predictors = read_csv(file = "data/all_pca_predictors.csv")
+# all_pca_predictors = read_csv(file = "data/all_pca_predictors.csv")
 
 all_predictors = left_join(abiotic_predictors, all_percent_trophic_bymass) %>% 
-  left_join(all_pca_predictors) %>%
+  # left_join(all_pca_predictors) %>%
   pivot_longer(cols = c(-stream, -watershed, -contains("_s"))) %>% 
   group_by(name) %>% 
   mutate(value = scale(value),
@@ -80,7 +80,8 @@ landreth_fish_data = landreth_data %>%
          xmax = max(dw_g)) %>% 
   group_by(stream, xmin, xmax, dw_g, sample_area_m2) %>% 
   tally(name = "counts") %>% 
-  mutate(counts = counts/sample_area_m2) %>% 
+  mutate(sample_area_km2 = sample_area_m2/1000) %>% 
+  mutate(counts = counts/sample_area_km2) %>% 
   group_by(stream) %>% 
   add_tally() %>% 
   arrange(n) %>% 
@@ -121,9 +122,41 @@ landreth_fishmacros_data = landreth_data %>%
   left_join(all_predictors) %>% 
   filter(!is.na(watershed))
 
-saveRDS(landreth_fish_data, file = "data/landreth_fish_data.rds")
+saveRDS(landreth_fish_data, file = "data/landreth_fish_data_uncorrected.rds")
+saveRDS(landreth_macros_data, file = "data/landreth_macros_data_uncorrected.rds")
+saveRDS(landreth_fishmacros_data, file = "data/landreth_fishmacros_data_uncorrected.rds")
+
+peak_min_sizes_macros <- readRDS("data/peak_min_sizes_macros.RDS")
+peak_min_sizes_fish = readRDS("data/peak_min_sizes_fish.rds")
+peak_min_sizes_fishmacros = readRDS("data/peak_min_sizes.rds")
+
+landreth_macros_data = readRDS(file = "data/landreth_macros_data_uncorrected.rds") %>% 
+  left_join(peak_min_sizes_macros) %>% 
+  filter(dw_g >= sum_min) %>% 
+  group_by(stream) %>% 
+  mutate(xmin = min(dw_g),
+         xmax = max(dw_g))
+
+landreth_fishmacros_data = readRDS(file = "data/landreth_fishmacros_data_uncorrected.rds") %>% 
+  left_join(peak_min_sizes_fishmacros) %>% 
+  filter(dw_g >= sum_min) %>% 
+  group_by(stream) %>% 
+  mutate(xmin = min(dw_g),
+         xmax = max(dw_g))
+
+landreth_fish_data = readRDS(file = "data/landreth_fish_data_uncorrected.rds") %>% 
+  left_join(peak_min_sizes_fish) %>% 
+  filter(dw_g >= sum_min) %>% 
+  group_by(stream) %>% 
+  mutate(xmin = min(dw_g),
+         xmax = max(dw_g))
+
 saveRDS(landreth_macros_data, file = "data/landreth_macros_data.rds")
+saveRDS(landreth_fish_data, file = "data/landreth_fish_data.rds")
 saveRDS(landreth_fishmacros_data, file = "data/landreth_fishmacros_data.rds")
+
+
+
 
 # check correlations
 library(ggcorrplot)
