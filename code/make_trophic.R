@@ -25,6 +25,15 @@ fish_trophic = read_csv("data/fish_trophic.csv") %>%
   mutate(trophic = case_when(grepl("invert", ffg) ~ "invertivore", TRUE ~ ffg),
          trophic = tolower(trophic))
 
+all_trophic = landreth_macros_data_ffg %>% rename(taxon = family) %>% 
+  select(taxon, ffg, source, ffg_score, trophic) %>% 
+  mutate(macro_fish = "macroinvertebrates") %>% 
+  bind_rows(fish_trophic %>% rename(taxon = species,
+                                    source = entered_by) %>% 
+              select(taxon, ffg, source, trophic) %>% 
+              mutate(macro_fish = "fish"))
+
+write_csv(all_trophic, file = "data/all_trophic.csv")
 
 fish_trophic_size = fish_body_sizes %>% 
   left_join(fish_trophic) %>% 

@@ -5,17 +5,12 @@ library(ggthemes)
 library(ggh4x)
 
 landreth_fishmacros_data = readRDS(file = "data/landreth_fishmacros_data.rds") %>% mutate(taxon = "fish + macros")
-peak_min_sizes = readRDS("file/data/peak_min_sizes.rds") # count and sumnorm xmins from Pomeranz in Sep 2024. These are
-# derived from the mlebin procedure in Edwards SizeSpectra. They identify the binned values above which the body sizes are most 
+peak_min_sizes = readRDS("data/peak_min_sizes.rds") # count and sumnorm xmins from Pomeranz in Sep 2024. These identify the binned values above which the body sizes are most 
 # likely to follow a power law.
-
-landreth_fishmacros_data = readRDS(file = "data/landreth_fishmacros_data.rds") 
-
-
 
 # compare log bins of original and modified data --------------------------
 
-original_data = landreth_fishmacros_data %>% mutate(data = "original")
+original_data = readRDS(file = "data/landreth_fishmacros_data_uncorrected.rds")  %>% mutate(data = "original")
 modified_data = landreth_fishmacros_data %>% 
   left_join(peak_min_sizes) %>% 
   filter(dw_g >= sum_min) %>%  # remove biased small sizes
@@ -43,23 +38,24 @@ bind_rows(original_data, modified_data) %>%
 # compare lambdas of original and modified data ---------------------------
 
 # 1) intercept only models
-original_and_modified_data = bind_rows(original_data, modified_data)
+# original_and_modified_data = bind_rows(original_data, modified_data)
+# 
+# newlist = original_and_modified_data %>% group_by(stream, data) %>% 
+#   mutate(xmin = min(dw_g)) %>% group_split()
+# 
+# brm_dummy = readRDS("models/temporary/brm_list.rds")[[1]]
+# 
+# brm_update = list()
+# 
+# for(i in 1:length(newlist)){
+#   brm_update[[i]] = update(brm_dummy, newdata = newlist[[i]],
+#                            data2 = list(stream = unique(newlist[[i]]$stream),
+#                                         data = unique(newlist[[i]]$data)))
+# }
+# 
+# saveRDS(brm_update, file = "models/temporary/brm_update.rds")
 
-newlist = original_and_modified_data %>% group_by(stream, data) %>% 
-  mutate(xmin = min(dw_g)) %>% group_split()
-
-brm_dummy = readRDS("models/temporary/brm_list.rds")[[1]]
-
-brm_update = list()
-
-for(i in 1:length(newlist)){
-  brm_update[[i]] = update(brm_dummy, newdata = newlist[[i]],
-                           data2 = list(stream = unique(newlist[[i]]$stream),
-                                        data = unique(newlist[[i]]$data)))
-}
-
-saveRDS(brm_update, file = "models/temporary/brm_update.rds")
-
+brm_update = readRDS(file = "models/temporary/brm_update.rds")
 
 # 2) get posteriors
 brm_compare_posts_list = list()
