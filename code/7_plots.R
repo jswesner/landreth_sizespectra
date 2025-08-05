@@ -16,16 +16,17 @@ landreth_fish_data = readRDS(file = "data/landreth_fish_data.rds") %>% mutate(ta
 landreth_data = bind_rows(landreth_fishmacros_data, landreth_macros_data, landreth_fish_data)
 
 # posterior averaged parameter values ------------------------------------------------------
-post_average_fishmacros_parameters = readRDS(file = "posteriors/post_average_parameters.rds") %>% mutate(taxon = "fish + macros")
-post_average_macros_parameters = readRDS(file = "posteriors/post_average_macros_parameters.rds") %>% mutate(taxon = "macros")
-post_average_fish_parameters = readRDS(file = "posteriors/post_average_fish_parameters.rds") %>% mutate(taxon = "fish")
+# post_average_fishmacros_parameters = readRDS(file = "posteriors/post_average_parameters.rds") %>% mutate(taxon = "fish + macros")
+# post_average_macros_parameters = readRDS(file = "posteriors/post_average_macros_parameters.rds") %>% mutate(taxon = "macros")
+# post_average_fish_parameters = readRDS(file = "posteriors/post_average_fish_parameters.rds") %>% mutate(taxon = "fish")
 
-post_average_parameters = bind_rows(post_average_fishmacros_parameters, 
-                                    post_average_macros_parameters,
-                                    post_average_fish_parameters)
+# post_average_parameters = bind_rows(post_average_fishmacros_parameters, 
+#                                     post_average_macros_parameters,
+#                                     post_average_fish_parameters)
+# 
+# saveRDS(post_average_parameters, file = "posteriors/post_average_parameters_all.rds")
 
-saveRDS(post_average_parameters, file = "posteriors/post_average_parameters_all.rds")
-
+post_average_parameters = readRDS(file = "posteriors/post_average_parameters_all.rds")
 
 clean_names = post_average_parameters %>% select(starts_with("b_"), taxon) %>% 
   pivot_longer(cols = -taxon) %>% 
@@ -151,19 +152,23 @@ fishmacros_median = post_dots_stream %>% filter(taxon_new == "a) fish + macros")
   group_by(stream) %>% 
   reframe(median_lambda = median(.epred))
 
+#00A782 Ohio R
+#E69C17 Monongahela R
+#0059E9 Cheat R
+
+
 stream_lambdas = post_dots_stream %>%
   left_join(fishmacros_median) %>% 
-  ggplot(aes(x = reorder(stream, -median_lambda), y = .epred, color = taxon_new)) + 
+  ggplot(aes(x = reorder(stream, -median_lambda), y = .epred, color = watershed)) + 
   stat_pointinterval(position = position_dodge(width = 0.4),aes(shape = taxon_new),
                      size = 0.01) +
-  scale_color_colorblind() +
+  scale_color_manual(values = c("#0059E9", "#E69C17", "#00A782")) +
   labs(x = "Stream Site", 
        y = "\u03bb",
-       color = "",
+       color = "Watershed",
        shape = "") +
   facet_wrap(~taxon_new, ncol = 3) +
-  guides(color = "none",
-         shape = "none") +
+  guides(shape = "none") +
   theme(legend.text = element_text(size = 7),
         text = element_text(size = 9),
         axis.text.x = element_text(angle = 90, hjust = 0))

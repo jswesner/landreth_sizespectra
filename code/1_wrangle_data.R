@@ -2,8 +2,6 @@ library(tidyverse)
 library(readxl)
 library(janitor)
 
-# !!!CHECK IF COUNTS ARE COLLATED PROPERLY IN THE FULL DATA SET (5/21/2024)
-
 # load macros
 macro_body_sizes = read_excel("data/body_sizes.xlsx", sheet = "Macros") %>% clean_names() %>% 
   rename(family = famiyl) %>% 
