@@ -58,16 +58,18 @@ plot_post_avg_parameters = post_average_parameters %>%
   mutate(median_value = median(value),
          dist_0 = abs(median_value) - 0) %>%
   left_join(posterior_avg_probs) %>% 
-  mutate(taxon = case_when(taxon == "macros" ~ "b) macros",
-                           taxon == "fish" ~ "c) fish",
-                           TRUE ~ "a) fish + macros")) %>% 
+  mutate(taxon = case_when(taxon == "macros" ~ "(b) macros",
+                           taxon == "fish" ~ "(c) fish",
+                           TRUE ~ "(a) fish + macros")) %>% 
   ggplot(aes(y = reorder(clean_name, median_value), x = value, fill = median_value)) + 
   stat_slabinterval(color = 'grey50', shape = 1) +
   geom_vline(xintercept = 0) +
   guides(color = "none",
          fill = "none",
          alpha = "none") +
-  xlim(-0.2, 0.2) +
+  scale_x_continuous(limits = c(-0.2, 0.2),
+                     breaks = c(-0.2, -0.1, 0, 0.1, 0.2),
+                     labels = c("−0.2", "−0.1", "0.0", "0.1", "0.2")) +
   labs(y = "Parameter",
        x = "Posterior Averaged Parameter Value",
        fill = "P(value > 0)") +
@@ -135,9 +137,10 @@ plot_post_average_lines = post_average_lines %>%
   guides(fill = "none") +
   labs(y = "\u03bb", 
         x= "Predictor (z-score)") +
-  theme(strip.text.y = element_text(size = 6))
+  theme(strip.text.y = element_text(size = 6)) + 
+  geom_pointrange(data = post_dots_summary, aes(x = value, y = .epred, ymin = .lower, ymax = .upper), 
+                  size = 0.05)
 
-# ggview::ggview(plot_post_average_lines, width = 5, height = 9)
 ggsave(plot_post_average_lines, file = "plots/plot_post_average_lines.jpg", width = 5, height = 9, dpi = 300)
 
 # stream lambdas ----------------------------------------------------------
